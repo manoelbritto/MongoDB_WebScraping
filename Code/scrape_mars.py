@@ -19,11 +19,11 @@ def callBrowser(url):
     # Create BeautifulSoup object; parse with 'html.parser'
     html = browser.html
     soup = bs(html, "html.parser")
-
+    browser.quit()
     return soup
 
 
-def lastNews(self):
+def lastNews():
     # URL of page to be scraped
     url = 'https://mars.nasa.gov/news/?page=0&per_page=40&order=publish_date+desc%2Ccreated_at+desc&search=&category=19%2C165%2C184%2C204&blank_scope=Latest'
 
@@ -38,11 +38,12 @@ def lastNews(self):
         new_time = result.find('div', class_='list_date').text
         news_p = result.find('div', class_='article_teaser_body').text
         break
-    list_return = [new_time, news_p]
+    list_return = [new_time, news_p, news_title]
+
     return list_return
 
 
-def recentImageMars(self):
+def recentImageMars():
     # URL of page to be scraped
     url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
     soup = callBrowser(url)
@@ -54,10 +55,11 @@ def recentImageMars(self):
 
     # join the url with the link
     featured_image_url = url[:24]+link
+
     return featured_image_url
 
 
-def twitterWeather(self):
+def twitterWeather():
     # URL of page to be scraped
     url = 'https://twitter.com/marswxreport?lang=en'
     soup = callBrowser(url)
@@ -75,10 +77,11 @@ def twitterWeather(self):
         mars_weather = result_weather.find('p').text
         break
     list_return = [time_stamp, mars_weather]
+
     return list_return
 
 
-def getMarsPicture(sef):
+def getMarsPicture():
     schiaparelli = 'https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/schiaparelli_enhanced.tif/full.jpg'
     syrtis = 'https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/syrtis_major_enhanced.tif/full.jpg'
     valles = 'https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/valles_marineris_enhanced.tif/full.jpg'
@@ -99,15 +102,27 @@ def mongoInsert(vlastNews, vrecentImageMars, vtwitterWeather, vgetMarsPicture):
     client = pymongo.MongoClient(conn)
 
     # Select database and collection to use
-    db = client.store_inventory
-    collection = db.produce
+    db = client.dbscrape
+    collection_result = db.result
+
+    collection_result.drop
+    collection_result.insert({
+        "news_time": vlastNews[0],
+        "news_parag": vlastNews[1],
+        "news_title": vlastNews[2],
+        "new_image_url": vtwitterWeather[0],
+        "twitter_time": vtwitterWeather[0],
+        "twitter_messag": vtwitterWeather[1],
+        "urls_mars": vgetMarsPicture  # a list of dicitionary
+
+    })
 
 
 # call functions and retrieve result in a list
 
-vlastNews = lastNews
-vrecentImageMars = recentImageMars
-vtwitterWeather = twitterWeather
-vgetMarsPicture = getMarsPicture
+vlastNews = lastNews()
+vrecentImageMars = recentImageMars()
+vtwitterWeather = twitterWeather()
+vgetMarsPicture = getMarsPicture()
 
 mongoInsert(vlastNews, vrecentImageMars, vtwitterWeather, vgetMarsPicture)
