@@ -5,6 +5,8 @@ import time
 import pandas as pd
 import pymongo
 
+# this function will be called to scrape using splinter
+
 
 def callBrowser(url):
     executable_path = {'executable_path': 'chromedriver.exe'}
@@ -110,7 +112,7 @@ def mongoInsert(vlastNews, vrecentImageMars, vtwitterWeather, vgetMarsPicture):
         "news_time": vlastNews[0],
         "news_parag": vlastNews[1],
         "news_title": vlastNews[2],
-        "new_image_url": vtwitterWeather[0],
+        "new_image_url": vrecentImageMars,
         "twitter_time": vtwitterWeather[0],
         "twitter_messag": vtwitterWeather[1],
         "urls_mars": vgetMarsPicture  # a list of dicitionary
@@ -118,11 +120,22 @@ def mongoInsert(vlastNews, vrecentImageMars, vtwitterWeather, vgetMarsPicture):
     })
 
 
-# call functions and retrieve result in a list
+def scrape():
+    # call functions and retrieve result in a list and save it in mongodb
+    vlastNews = lastNews()
+    vrecentImageMars = recentImageMars()
+    vtwitterWeather = twitterWeather()
+    vgetMarsPicture = getMarsPicture()
 
-vlastNews = lastNews()
-vrecentImageMars = recentImageMars()
-vtwitterWeather = twitterWeather()
-vgetMarsPicture = getMarsPicture()
+   # it call direct mongodb and pass the list into it
+   # mongoInsert(vlastNews, vrecentImageMars, vtwitterWeather, vgetMarsPicture)
+    listing = {}
+    listing["news_time"] = vlastNews[0],
+    listing["news_parag"] = vlastNews[1],
+    listing["news_title"] = vlastNews[2],
+    listing["new_image_url"] = vrecentImageMars,
+    listing["twitter_time"] = vtwitterWeather[0],
+    listing["twitter_messag"] = vtwitterWeather[1],
+    listing["urls_mars"] = vgetMarsPicture  # a list of dicitionary
 
-mongoInsert(vlastNews, vrecentImageMars, vtwitterWeather, vgetMarsPicture)
+    return listing
