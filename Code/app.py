@@ -18,11 +18,19 @@ def index():
     return render_template("index.html", listings=listings)
 
 
+@app.route("/images")
+def image():
+    listings = mongo.db.listings.find_one()
+    return render_template("pages/images.html", listings=listings)
+
+
 @app.route("/scrape")
 def scraper():
+
     listings = mongo.db.listings
+    listings.remove()
     listings_data = scrape_mars.scrape()
-    listings.update({}, listings_data, upsert=True)
+    listings.insert(listings_data)
     return redirect("/", code=302)
 
 

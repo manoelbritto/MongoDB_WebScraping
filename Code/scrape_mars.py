@@ -16,8 +16,8 @@ def callBrowser(url):
 
     # Retrieve page with the requests module
     browser.visit(url)
-    # two seconds to wait the page finish to load
-    time.sleep(2)
+    # seconds to wait the page finish to load
+    time.sleep(1)
     # Create BeautifulSoup object; parse with 'html.parser'
     html = browser.html
     soup = bs(html, "html.parser")
@@ -129,13 +129,14 @@ def scrape():
 
    # it call direct mongodb and pass the list into it
    # mongoInsert(vlastNews, vrecentImageMars, vtwitterWeather, vgetMarsPicture)
-    listing = {}
-    listing["news_time"] = vlastNews[0],
-    listing["news_parag"] = vlastNews[1],
-    listing["news_title"] = vlastNews[2],
-    listing["new_image_url"] = vrecentImageMars,
-    listing["twitter_time"] = vtwitterWeather[0],
-    listing["twitter_messag"] = vtwitterWeather[1],
-    listing["urls_mars"] = vgetMarsPicture  # a list of dicitionary
+    listing = {"news_time": vlastNews[0],
+               "news_time": vlastNews[0],
+               "news_parag": vlastNews[1],
+               "news_title": vlastNews[2],
+               "new_image_url": vrecentImageMars,
+               "twitter_time": vtwitterWeather[0],
+               "twitter_messag": vtwitterWeather[1],
+               "urls_mars": vgetMarsPicture  # a list of dicitionary
+               }
 
     return listing
