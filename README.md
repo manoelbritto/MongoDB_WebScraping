@@ -17,9 +17,10 @@ pip install pymongo
 pip install pandas
 pip install flask
 ```
-<br>Then, you have to start MongoDB services and execute app.py:
+<br>Then, you have to start MongoDB services and execute app.py:<br>
 **Command to start MongoDB service:**<br>
 mongod <br>
+
 **Execute the program:** <br>
 python app.py<br>
 
