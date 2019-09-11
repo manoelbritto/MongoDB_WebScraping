@@ -97,6 +97,15 @@ def getMarsPicture():
 
     return hemisphere_image_urls
 
+def getHtmlTable ():
+    url = 'https://space-facts.com/mars/'
+    tables = pd.read_html(url)
+    df = tables[1]
+    df.columns=["description","values"]
+    df.set_index('description',inplace=True)
+    html_result = df.to_html()
+
+    return html_result
 
 def mongoInsert(vlastNews, vrecentImageMars, vtwitterWeather, vgetMarsPicture):
     # Setup connection to mongodb
@@ -126,6 +135,7 @@ def scrape():
     vrecentImageMars = recentImageMars()
     vtwitterWeather = twitterWeather()
     vgetMarsPicture = getMarsPicture()
+    vgetHtmlTable = getHtmlTable()
 
    # it call direct mongodb and pass the list into it
    # mongoInsert(vlastNews, vrecentImageMars, vtwitterWeather, vgetMarsPicture)
@@ -136,7 +146,8 @@ def scrape():
                "new_image_url": vrecentImageMars,
                "twitter_time": vtwitterWeather[0],
                "twitter_messag": vtwitterWeather[1],
-               "urls_mars": vgetMarsPicture  # a list of dicitionary
+               "urls_mars": vgetMarsPicture,  # a list of dicitionary
+               "html_table": vgetHtmlTable
                }
 
     return listing
